@@ -129,7 +129,7 @@ if (isset($_SESSION['logged'])){
 }
 ?>
             <li class="nav-item">
-                <a class="nav-link" href="#">A propos de moi</a>
+                <a class="nav-link" href="views/aboutme.html">A propos de moi</a>
             </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">        
@@ -174,13 +174,13 @@ if (isset($_SESSION['logged'])){
               <!--Body-->
               <div class="modal-body mb-1">
                 <form method="POST" action="?action=login&page=<?= $page ?>">
-                    <div class="md-form form-sm mb-5">
+                    <div class="md-form form-sm mb-2">
                         <i class="fas fa-envelope prefix"></i>
                         <input type="email" name="email" id="modalLRInput10" class="form-control form-control-sm validate">
                         <label data-error="wrong" data-success="right" for="modalLRInput10">Email</label>
                     </div>
     
-                    <div class="md-form form-sm mb-4">
+                    <div class="md-form form-sm mb-2">
                         <i class="fas fa-lock prefix"></i>
                         <input type="password" name="password" id="modalLRInput11" class="form-control form-control-sm validate">
                         <label data-error="wrong" data-success="right" for="modalLRInput11">Mot de passe</label>
@@ -209,20 +209,20 @@ if (isset($_SESSION['logged'])){
               
                 <div class="modal-body">
                     <form method="POST" action="?action=register&page=<?= $page ?>">
-                        <div class="md-form form-sm mb-5">
+                        <div class="md-form form-sm mb-2">
                             <i class="fas fa-envelope prefix"></i>
                             <input type="email" name="email" id="modalLRInput12" class="form-control form-control-sm validate">
                             <label data-error="wrong" data-success="right" for="modalLRInput12">Email</label>
                         </div>
-                        <div class="md-form form-sm mb-5">
+                        <div class="md-form form-sm mb-2">
                             <i class="fas fa-lock prefix"></i>
                             <input type="password" name="password" id="modalLRInput13" class="form-control form-control-sm validate">
                             <label data-error="wrong" data-success="right" for="modalLRInput13">Mot de passe</label>
                         </div>
-                        <div class="md-form form-sm mb-4">
+                        <div class="md-form form-sm mb-2">
                             <i class="fas fa-lock prefix"></i>
                             <input type="password" name="password2" id="modalLRInput14" class="form-control form-control-sm validate">
-                            <label data-error="wrong" data-success="right" for="modalLRInput14">Répéter le mot de passe</label>
+                            <label data-error="wrong" data-success="right" for="modalLRInput14">Retaper le mot de passe</label>
                         </div>
                         <div class="text-center form-sm mt-2">
                             <button class="btn btn-info">Inscription<i class="fas fa-sign-in ml-1"></i></button>
@@ -232,7 +232,7 @@ if (isset($_SESSION['logged'])){
                 <!--Footer-->
                 <div class="modal-footer">
                     <div class="options text-right">
-                      <p class="pt-1">Déjà un compte? <a href="#" class="blue-text">Se connecter</a></p>
+                      <p class="pt-1">Déjà un compte? <a href="?action=login&page=home#panel8" class="blue-text">Se connecter</a></p>
                     </div>
                     <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Fermer</button>
                 </div>
