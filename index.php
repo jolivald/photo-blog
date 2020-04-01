@@ -1,4 +1,81 @@
-<!doctype html>
+<?php
+
+// déclare les actions autorisées à passer en GET
+$actions = ['page', 'buy', 'login', 'logout', 'register'];
+
+// déclare les pages autorisées à passer en GET
+$pages = ['home', 'gallery', 'about'];
+
+// détermine l'action demandée par l'utilisateur, page par défaut
+$action = $_GET['action'] ?? 'page';
+
+// détermine la page à afficher à l'utilisateur, home par défaut
+$page = $_GET['page'] ?? 'home';
+
+// envoit le code d'erreur HTTP 403 et stoppe le script
+function httpForbidden() {
+    header('HTTP/1.1 403 Forbidden');
+    echo '<h1>403 Forbidden</h1>';
+    exit('Le serveur a compris la requête, mais refuse de l\'exécuter.');
+}
+
+// vérifie que l'URL est bien formée
+if (!in_array($action, $actions) || !in_array($page, $pages)){
+    httpForbidden();
+}
+
+// si on reçois des données provenant d'un formulaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    // les actions "page" et "buy" ne sont pas autorisées avec la méthode POST
+    if ($action === 'page' || $action === 'buy'){
+        httpForbidden();
+    }
+
+    // charge la classe Customer
+    require_once('Customer.php');
+
+    try {
+        // crée une instance de la classe Customer
+        $customer = new Customer();
+
+        // demande de fermeture de session
+        if ($action === 'logout'){
+            $customer->logout();
+        }
+        // autres actions nécessitant des paramètres POST (login, register)
+        else {
+            // récupère les paramètres passés par le formulaire
+            $email    = $_POST['email'];
+            $password = $_POST['password'];
+
+            // vérifie que les paramètres POST ont été définis correctement
+            if (empty($email) || empty($password)){
+                // sinon lève une exception avec un message d'erreur
+                throw new Exception('L\'adresse email et le mot de passe doivent être renseignés.');
+            }
+            // si il s'agit d'une demande d'inscription d'un consommateur
+            if ($action === 'register'){
+                if ($customer->exists($email)){
+                    throw new Exception('Un utilisateur utilisant cette adresse email est déjà enregitré.');
+                }
+                $customer->register($email, $password);
+            }
+            // on assume une demande d'ouverture de session (utile pour auto-login après inscription)
+            $customer->login($email, $password);
+        }
+    } catch (Exception $e){
+        // TODO afficher un message d'erreur
+    }
+
+}
+// traitement des requêtes GET
+else {
+
+}
+
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Title</title>
@@ -7,7 +84,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap.min.css">
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -44,12 +121,11 @@
 
 <!-- Container -->
 <div class="container my-4">
-
+<!--
     <p class="font-weight-bold">Bootstrap image slider is responsive and interactive slideshow which is created for
     presenting content, especially images and videos.</p>
-
     <p><strong>Detailed documentation and more examples about Bootstrap image slider you can find in our <a href="https://mdbootstrap.com/docs/jquery/javascript/carousel/" target="_blank">Bootstrap Carousel Docs</a></strong></p>
-
+-->
     <h2 class="my-5 h2">A World of Faces</h2>
 
     <!-- Carousel Wrapper -->
@@ -67,33 +143,36 @@
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
                 <div class="view">
-                    <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(68).jpg" alt="First slide">
+                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(68).jpg" alt="First slide"> -->
+                    <img class="d-block w-100" src="photos/australy.jpg" alt="Visage d'un aborigène ad'Australie">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h3 class="h3-responsive">Light mask</h3>
+                    <h3 class="h3-responsive">Australie</h3>
                     <p>First text</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <!--Mask color-->
                 <div class="view">
-                    <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(6).jpg" alt="Second slide">
+                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(6).jpg" alt="Second slide"> -->
+                    <img class="d-block w-100" src="photos/canada.jpg" alt="Visage d'une jeune fille sous la neige du Canada">
                     <div class="mask rgba-black-strong"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h3 class="h3-responsive">Strong mask</h3>
+                    <h3 class="h3-responsive">Canada</h3>
                     <p>Secondary text</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <!--Mask color-->
                 <div class="view">
-                    <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(9).jpg" alt="Third slide">
+                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(9).jpg" alt="Third slide"> -->
+                    <img class="d-block w-100" src="photos/germany.jpg" alt="Visage d'un vieil homme barbu originaire d'Allemagne">
                     <div class="mask rgba-black-slight"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h3 class="h3-responsive">Slight mask</h3>
+                    <h3 class="h3-responsive">Allemagne</h3>
                     <p>Third text</p>
                 </div>
             </div>

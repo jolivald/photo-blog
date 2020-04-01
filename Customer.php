@@ -60,13 +60,12 @@ class Customer
    * @throws Exception En cas d'erreur d'écriture.
    */
   public function register($email, $password) {
-    $hash  = password_hash($password, PASSWORD_BCRYPT);
+    $hash  = password_hash($password, PASSWORD_DEFAULT);
     $query = $this->db->prepare(
       'INSERT INTO '.DB_TABLE.' (`email`, `password`) VALUES (?, ?)'
     );
     $done = $query->execute([$email, $hash]);
     if (!$done) throw new Exception('Erreur à l\'écriture dans la table des consommateurs.');
-    /** @TODO auto-login here? */
   }
 
   /**
@@ -76,16 +75,27 @@ class Customer
    * @param string $password Mot de passe du consommateur.
    * @return boolean Vrai si la session a été ouverte.
    * @throws Exception En cas d'erreur de lecture.
+   * @see https://www.php.net/manual/en/session.security.ini.php
    */
   public function login($email, $password) {
-    $hash  = password_hash($password, PASSWORD_BCRYPT);
     $query = $this->db->prepare(
-      'SELECT email FROM '.DB_TABLE.' WHERE password=?'
+      'SELECT password FROM '.DB_TABLE.' WHERE email=?'
     );
-    $done = $query->execute([$hash]);
+    $done = $query->execute([$email]);
     if (!$done) throw new Exception('Erreur à la lecture de la table des consommateurs.');
-    $result = $query->fetch(PDO::FETCH_NUM);
-    if (empty($result) || !session_start()){ return false; }
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+    if (empty($result) // TODO make sure result is empty if no email match
+    || !password_verify($password, $result['password'])
+    || !session_start([
+      'cookie_lifetime' => 0,
+      'use_cookies' => 'On',
+      'use_only_cookies' => 'On',
+      'use_strict_mode' => 'On',
+      'cookie_httponly' => 'On',
+      'cache_limiter' => 'nocache'
+    ])){
+      return false;
+    }
     $_SESSION['logged'] = true;
     $_SESSION['email']  = $email;
     return true;
