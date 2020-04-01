@@ -1,7 +1,18 @@
 <?php
+session_start([
+    'cookie_lifetime' => 0,
+    'use_cookies' => 'On',
+    'use_only_cookies' => 'On',
+    'use_strict_mode' => 'On',
+    'cookie_httponly' => 'On',
+    'cache_limiter' => 'nocache'
+]);
 
 // charge l'autoloader fourni par composer
 require_once(__DIR__.'/vendor/autoload.php');
+
+// charge la classe Customer
+require_once('Customer.php');
 
 // charge la configuration de la BDD depuis le fichier .env
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -34,43 +45,39 @@ if (!in_array($action, $actions) || !in_array($page, $pages)){
 // si on reçois des données provenant d'un formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-    // les actions "page" et "buy" ne sont pas autorisées avec la méthode POST
-    if ($action === 'page' || $action === 'buy'){
+    // les seules actions tolérées en POST sont "login" et "register"
+    if (!in_array($action, ['login', 'register'])){
         httpForbidden();
     }
-
-    // charge la classe Customer
-    require_once('Customer.php');
 
     try {
         // crée une instance de la classe Customer
         $customer = new Customer();
 
-        // demande de fermeture de session
-        if ($action === 'logout'){
-            $customer->logout();
+        // récupère les paramètres passés par le formulaire
+        $email    = $_POST['email'];
+        $password = $_POST['password'];
+        
+        // vérifie que les paramètres POST ont été définis correctement
+        if (empty($email) || empty($password)){
+            // sinon lève une exception avec un message d'erreur
+            throw new Exception('L\'adresse email et le mot de passe doivent être renseignés.');
         }
-        // autres actions nécessitant des paramètres POST (login, register)
-        else {
-            // récupère les paramètres passés par le formulaire
-            $email    = $_POST['email'];
-            $password = $_POST['password'];
-
-            // vérifie que les paramètres POST ont été définis correctement
-            if (empty($email) || empty($password)){
-                // sinon lève une exception avec un message d'erreur
-                throw new Exception('L\'adresse email et le mot de passe doivent être renseignés.');
+        // si il s'agit d'une demande d'inscription d'un consommateur
+        if ($action === 'register'){
+            $password2 = $_POST['password2'];
+            if ($password !== $password2){
+                throw new Exception('La vérification du mot de passe a échouée.');
             }
-            // si il s'agit d'une demande d'inscription d'un consommateur
-            if ($action === 'register'){
-                if ($customer->exists($email)){
-                    throw new Exception('Un utilisateur utilisant cette adresse email est déjà enregitré.');
-                }
-                $customer->register($email, $password);
+            if ($customer->exists($email)){
+                throw new Exception('Un utilisateur utilisant cette adresse email est déjà enregitré.');
             }
-            // on assume une demande d'ouverture de session (utile pour auto-login après inscription)
-            $customer->login($email, $password);
+            $customer->register($email, $password);
         }
+        // on assume une demande d'ouverture de session (utile pour auto-login après inscription)
+        $logged = $customer->login($email, $password);
+        if (!$logged){ throw new Exception('La connexion a échouée.'); }
+            
     } catch (Exception $e){
         // TODO afficher un message d'erreur
     }
@@ -78,9 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 }
 // traitement des requêtes GET
 else {
-
+    // demande de fermeture de session
+    if ($action === 'logout'){
+        // crée une instance de la classe Customer
+        $customer = new Customer();
+        // utilise la méthode logout pour clore la session
+        $customer->logout();
+    }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -111,18 +123,18 @@ else {
             <li class="nav-item active">
                 <a class="nav-link" href="#">Accueil <span class="sr-only">(actuel)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Commandes</a>
-            </li>
+<?php
+if (isset($_SESSION['logged'])){
+    echo '<li class="nav-item"><a class="nav-link" href="#">Commandes</a></li>';
+}
+?>
             <li class="nav-item">
                 <a class="nav-link" href="#">A propos de moi</a>
             </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <!-- TODO changer boutons en fonction de la session -->
-                
+            <form class="form-inline my-2 my-lg-0">        
 <?php
-if (isset($_SESSION) && $_SESSION['logged'] === true){
+if (isset($_SESSION['logged'])){
     echo '<a href="?action=logout&page='.$page.'" class="btn btn-primary btn-lg active">Déconnexion</a>';
 } else {
     echo '<a href="#" class="btn btn-primary btn-lg active" data-toggle="modal" data-target="#modalLRForm">Connexion</a>';
@@ -164,13 +176,13 @@ if (isset($_SESSION) && $_SESSION['logged'] === true){
                 <form method="POST" action="?action=login&page=<?= $page ?>">
                     <div class="md-form form-sm mb-5">
                         <i class="fas fa-envelope prefix"></i>
-                        <input type="email" id="modalLRInput10" class="form-control form-control-sm validate">
+                        <input type="email" name="email" id="modalLRInput10" class="form-control form-control-sm validate">
                         <label data-error="wrong" data-success="right" for="modalLRInput10">Email</label>
                     </div>
     
                     <div class="md-form form-sm mb-4">
                         <i class="fas fa-lock prefix"></i>
-                        <input type="password" id="modalLRInput11" class="form-control form-control-sm validate">
+                        <input type="password" name="password" id="modalLRInput11" class="form-control form-control-sm validate">
                         <label data-error="wrong" data-success="right" for="modalLRInput11">Mot de passe</label>
                     </div>
                     <div class="text-center mt-2">
@@ -199,17 +211,17 @@ if (isset($_SESSION) && $_SESSION['logged'] === true){
                     <form method="POST" action="?action=register&page=<?= $page ?>">
                         <div class="md-form form-sm mb-5">
                             <i class="fas fa-envelope prefix"></i>
-                            <input type="email" id="modalLRInput12" class="form-control form-control-sm validate">
+                            <input type="email" name="email" id="modalLRInput12" class="form-control form-control-sm validate">
                             <label data-error="wrong" data-success="right" for="modalLRInput12">Email</label>
                         </div>
                         <div class="md-form form-sm mb-5">
                             <i class="fas fa-lock prefix"></i>
-                            <input type="password" id="modalLRInput13" class="form-control form-control-sm validate">
+                            <input type="password" name="password" id="modalLRInput13" class="form-control form-control-sm validate">
                             <label data-error="wrong" data-success="right" for="modalLRInput13">Mot de passe</label>
                         </div>
                         <div class="md-form form-sm mb-4">
                             <i class="fas fa-lock prefix"></i>
-                            <input type="password" id="modalLRInput14" class="form-control form-control-sm validate">
+                            <input type="password" name="password2" id="modalLRInput14" class="form-control form-control-sm validate">
                             <label data-error="wrong" data-success="right" for="modalLRInput14">Répéter le mot de passe</label>
                         </div>
                         <div class="text-center form-sm mt-2">
