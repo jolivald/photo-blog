@@ -139,8 +139,7 @@ else {
         <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
                 <div class="view">
-                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(68).jpg" alt="First slide"> -->
-                    <img class="d-block w-100" src="photos/australy.jpg" alt="Visage d'un aborigène ad'Australie">
+                    <img class="d-block w-100" src="photos/public-maroc.jpg" alt="Visage d'une jeune fille originaire du Maroc">
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
@@ -151,20 +150,7 @@ else {
             <div class="carousel-item">
                 <!--Mask color-->
                 <div class="view">
-                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(6).jpg" alt="Second slide"> -->
-                    <img class="d-block w-100" src="photos/canada.jpg" alt="Visage d'une jeune fille sous la neige du Canada">
-                    <div class="mask rgba-black-strong"></div>
-                </div>
-                <div class="carousel-caption">
-                    <h3 class="h3-responsive">Canada</h3>
-                    <p>Secondary text</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <!--Mask color-->
-                <div class="view">
-                    <!-- <img class="d-block w-100" src="https://mdbootstrap.com/img/Photos/Slides/img%20(9).jpg" alt="Third slide"> -->
-                    <img class="d-block w-100" src="photos/germany.jpg" alt="Visage d'un vieil homme barbu originaire d'Allemagne">
+                    <img class="d-block w-100" src="photos/public-germany.jpg" alt="Visage d'un vieil homme barbu originaire d'Allemagne">
                     <div class="mask rgba-black-slight"></div>
                 </div>
                 <div class="carousel-caption">
@@ -172,6 +158,18 @@ else {
                     <p>Third text</p>
                 </div>
             </div>
+            <div class="carousel-item">
+                <!--Mask color-->
+                <div class="view">
+                    <img class="d-block w-100" src="photos/public-italy.jpg" alt="Visage d'une jeune fille sous la neige du Canada">
+                    <div class="mask rgba-black-strong"></div>
+                </div>
+                <div class="carousel-caption">
+                    <h3 class="h3-responsive">Italie</h3>
+                    <p>Secondary text</p>
+                </div>
+            </div>
+
         </div>
         <!--/Slides-->
 
