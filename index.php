@@ -121,12 +121,8 @@ else {
 
 <!-- Container -->
 <div class="container my-4">
-<!--
-    <p class="font-weight-bold">Bootstrap image slider is responsive and interactive slideshow which is created for
-    presenting content, especially images and videos.</p>
-    <p><strong>Detailed documentation and more examples about Bootstrap image slider you can find in our <a href="https://mdbootstrap.com/docs/jquery/javascript/carousel/" target="_blank">Bootstrap Carousel Docs</a></strong></p>
--->
-    <h2 class="my-5 h2">A World of Faces</h2>
+
+    <h2 class="my-5 h2">Jean-Michel Hinicker<br><small class="lead">A World of Faces</small></h2> 
 
     <!-- Carousel Wrapper -->
     <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
