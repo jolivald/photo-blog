@@ -15,7 +15,7 @@ $page = $_GET['page'] ?? 'home';
 // envoit le code d'erreur HTTP 403 et stoppe le script
 function httpForbidden() {
     header('HTTP/1.1 403 Forbidden');
-    echo '<h1>403 Forbidden</h1>';
+    echo '<h1>403 - Interdit</h1>';
     exit('Le serveur a compris la requête, mais refuse de l\'exécuter.');
 }
 
