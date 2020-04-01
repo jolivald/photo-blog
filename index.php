@@ -1,5 +1,12 @@
 <?php
 
+// charge l'autoloader fourni par composer
+require_once(__DIR__.'/vendor/autoload.php');
+
+// charge la configuration de la BDD depuis le fichier .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // déclare les actions autorisées à passer en GET
 $actions = ['page', 'buy', 'login', 'logout', 'register'];
 

@@ -1,10 +1,5 @@
 <?php
 
-define('DB_USER', 'changez moi');
-define('DB_PASS', 'changez moi');
-define('DB_NAME', 'photo-blog');
-define('DB_TABLE', 'customer');
-
 /**
  * Regroupe les fonctionnalités liées au consommateur
  */
