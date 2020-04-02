@@ -254,7 +254,7 @@ else {
               <!--Footer-->
               <div class="modal-footer">
                 <div class="options text-center text-md-right mt-1">
-                  <p>Pas membre? <a href="#" class="blue-text">Créer un compte</a></p>
+                  <p>Pas membre? <a href="#" id="tab-register" class="blue-text">Créer un compte</a></p>
                   <p><a href="#" class="blue-text">Mot de passe oublié?</a></p>
                 </div>
                 <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Fermer</button>
@@ -293,7 +293,7 @@ else {
                 <!--Footer-->
                 <div class="modal-footer">
                     <div class="options text-right">
-                      <p class="pt-1">Déjà un compte? <a href="?action=login&page=home#panel8" class="blue-text">Se connecter</a></p>
+                      <p class="pt-1">Déjà un compte? <a href="#" id="tab-login" class="blue-text">Se connecter</a></p>
                     </div>
                     <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Fermer</button>
                 </div>
@@ -326,14 +326,25 @@ else {
     <?= $message ?>
   </div>
 </div>
-<script type="text/javascript">
-$(document).ready(function(){
-  $('.toast').toast('show');
-});
-</script>
+
 <?php endif; ?>
 <!--/Toast-->
 
+<script type="text/javascript">
+$(document).ready(function(){
+    // affiche la notification serveur si il y en a une
+    $('.toast').toast('show');
+    // active le changement d'onglet par les liens en bas de formulaire
+    $('#tab-login').click(function (event){
+        event.stopPropagation();
+        $('a[href="#panel7').tab('show');
+    });
+    $('#tab-register').click(function (event){
+        event.stopPropagation();
+        $('a[href="#panel8').tab('show');
+    });
+});
+</script>
 
 <!-- Container -->
 <div class="container my-4">
