@@ -323,8 +323,16 @@ switch ($page){
 <footer class="page-footer font-small blue">
 
     <!-- Copyright -->
-    <div class="footer-copyright text-center py-3">© 2020 Copyright:
-        <a href="#">MDBootstrap.com</a>
+    <div class="footer-copyright text-center py-3">
+        <a href="#"><img src="icons/facebook.png" alt="Facebook"></a>
+        &nbsp;
+        <a href="#"><img src="icons/instagram.png" alt="Instagram"></a>
+        &nbsp;
+        <a href="#"><img src="icons/pinterest.png" alt="Pinterest"></a>
+        &nbsp;
+        <a href="#"><img src="icons/twitter.png" alt="Twitter"></a>
+        <br>
+        &copy; 2020 Jean-Michel Hinicker
     </div>
     <!-- Copyright -->
 
