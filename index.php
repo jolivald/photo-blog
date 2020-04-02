@@ -121,11 +121,11 @@ else {
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Accueil <span class="sr-only">(actuel)</span></a>
+                <a class="nav-link" href="index.php">Accueil <span class="sr-only">(actuel)</span></a>
             </li>
 <?php
 if (isset($_SESSION['logged'])){
-    echo '<li class="nav-item"><a class="nav-link" href="#">Commandes</a></li>';
+    echo '<li class="nav-item"><a class="nav-link" href="views/order.html">Commandes</a></li>';
 }
 ?>
             <li class="nav-item">
@@ -271,7 +271,7 @@ if (isset($_SESSION['logged'])){
                     <div class="mask rgba-black-light"></div>
                 </div>
                 <div class="carousel-caption">
-                    <h3 class="h3-responsive">Australie</h3>
+                    <h3 class="h3-responsive">Maroc</h3>
                     <p>First text</p>
                 </div>
             </div>
