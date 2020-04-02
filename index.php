@@ -1,4 +1,5 @@
 <?php
+// démarre une session sécurisée
 session_start([
     'cookie_lifetime' => 0,
     'use_cookies' => 'On',
@@ -127,8 +128,19 @@ else {
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="cards-gallery.css">
     <style type="text/css">
+.carousel-inner {
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+}
 .cards-gallery {
-    padding-top: 0;
+    padding: 0;
+}
+.toast {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
 }
     </style>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -301,7 +313,6 @@ else {
 
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true"
     data-delay="3000"
-    style="position: absolute; top: 4rem; right: 0.5rem;"
 >
   <div class="toast-header">
     <!-- <img src="..." class="rounded mr-2" alt="..."> -->
