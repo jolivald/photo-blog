@@ -128,6 +128,9 @@ else {
 	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="cards-gallery.css">
     <style type="text/css">
+.navbar {
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+}
 .carousel-inner {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
     border-radius: 0.25rem;
