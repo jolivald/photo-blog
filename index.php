@@ -1,4 +1,5 @@
 <?php
+// démarre une session sécurisée
 session_start([
     'cookie_lifetime' => 0,
     'use_cookies' => 'On',
@@ -124,7 +125,24 @@ else {
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap.min.css">
-
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
+    <link rel="stylesheet" href="cards-gallery.css">
+    <style type="text/css">
+.carousel-inner {
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+}
+.cards-gallery {
+    padding: 0;
+}
+.toast {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+}
+    </style>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
@@ -141,26 +159,48 @@ else {
     </button>
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="?page=home">Accueil <span class="sr-only">(actuel)</span></a>
-            </li>
-<?php
-if (isset($_SESSION['logged'])){
-    echo '<li class="nav-item"><a class="nav-link" href="?page=order">Commandes</a></li>';
-}
-?>
-            <li class="nav-item">
-                <a class="nav-link" href="?page=aboutme">A propos de moi</a>
-            </li>
+
+<?php if ($page === 'home'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=home">Accueil <span class="sr-only">(actuel)</span></a>
+    </li>
+<?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=home">Accueil</a>
+    </li>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['logged'])): ?>
+    <?php if ($page === 'order'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=order">Commandes <span class="sr-only">(actuel)</span></a>
+    </li>
+    <?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=order">Commandes</a>
+    </li>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if ($page === 'aboutme'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=aboutme">A propos de moi <span class="sr-only">(actuel)</span></a>
+    </li>
+<?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=aboutme">A propos de moi</a>
+    </li>
+<?php endif; ?>
+
             </ul>
-            <form class="form-inline my-2 my-lg-0">        
-<?php
-if (isset($_SESSION['logged'])){
-    echo '<a href="?action=logout&page='.$page.'" class="btn btn-primary btn-lg active">Déconnexion</a>';
-} else {
-    echo '<a href="#" class="btn btn-primary btn-lg active" data-toggle="modal" data-target="#modalLRForm">Connexion</a>';
-}
-?>
+            <form class="form-inline my-2 my-lg-0">   
+
+<?php if (isset($_SESSION['logged'])): ?>
+    <a href="?action=logout" class="btn btn-primary btn-lg active">Déconnexion</a>
+<?php else: ?>
+    <a href="#" class="btn btn-primary btn-lg active" data-toggle="modal" data-target="#modalLRForm">Connexion</a>
+<?php endif; ?>
+
             </form>
         </div>
 </nav>
@@ -214,7 +254,7 @@ if (isset($_SESSION['logged'])){
               <!--Footer-->
               <div class="modal-footer">
                 <div class="options text-center text-md-right mt-1">
-                  <p>Pas membre? <a href="#panel8" class="blue-text">Créer un compte</a></p>
+                  <p>Pas membre? <a href="#" id="tab-register" class="blue-text">Créer un compte</a></p>
                   <p><a href="#" class="blue-text">Mot de passe oublié?</a></p>
                 </div>
                 <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Fermer</button>
@@ -253,7 +293,7 @@ if (isset($_SESSION['logged'])){
                 <!--Footer-->
                 <div class="modal-footer">
                     <div class="options text-right">
-                      <p class="pt-1">Déjà un compte? <a href="?action=login&page=home#panel8" class="blue-text">Se connecter</a></p>
+                      <p class="pt-1">Déjà un compte? <a href="#" id="tab-login" class="blue-text">Se connecter</a></p>
                     </div>
                     <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Fermer</button>
                 </div>
@@ -273,7 +313,6 @@ if (isset($_SESSION['logged'])){
 
 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true"
     data-delay="3000"
-    style="position: absolute; top: 4rem; right: 0.5rem;"
 >
   <div class="toast-header">
     <!-- <img src="..." class="rounded mr-2" alt="..."> -->
@@ -289,12 +328,26 @@ if (isset($_SESSION['logged'])){
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
-  $('.toast').toast('show');
+    // affiche la notification serveur
+    $('.toast').toast('show');
 });
 </script>
 <?php endif; ?>
 <!--/Toast-->
 
+<script type="text/javascript">
+$(document).ready(function(){
+    // active le changement d'onglet par les liens en bas de formulaire
+    $('#tab-login').click(function (event){
+        event.stopPropagation();
+        $('a[href="#panel7').tab('show');
+    });
+    $('#tab-register').click(function (event){
+        event.stopPropagation();
+        $('a[href="#panel8').tab('show');
+    });
+});
+</script>
 
 <!-- Container -->
 <div class="container my-4">
