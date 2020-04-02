@@ -326,14 +326,17 @@ else {
     <?= $message ?>
   </div>
 </div>
-
+<script type="text/javascript">
+$(document).ready(function(){
+    // affiche la notification serveur
+    $('.toast').toast('show');
+});
+</script>
 <?php endif; ?>
 <!--/Toast-->
 
 <script type="text/javascript">
 $(document).ready(function(){
-    // affiche la notification serveur si il y en a une
-    $('.toast').toast('show');
     // active le changement d'onglet par les liens en bas de formulaire
     $('#tab-login').click(function (event){
         event.stopPropagation();
