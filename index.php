@@ -22,13 +22,17 @@ $dotenv->load();
 $actions = ['page', 'buy', 'login', 'logout', 'register'];
 
 // déclare les pages autorisées à passer en GET
-$pages = ['home', 'gallery', 'about'];
+$pages = ['home', 'order', 'aboutme'];
 
 // détermine l'action demandée par l'utilisateur, page par défaut
 $action = $_GET['action'] ?? 'page';
 
 // détermine la page à afficher à l'utilisateur, home par défaut
 $page = $_GET['page'] ?? 'home';
+
+// variables utilisées pour afficher les notifications toast
+$alert   = false;
+$message = false;
 
 // envoit le code d'erreur HTTP 403 et stoppe le script
 function httpForbidden() {
@@ -73,13 +77,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
                 throw new Exception('Un utilisateur utilisant cette adresse email est déjà enregitré.');
             }
             $customer->register($email, $password);
+            // prépare le message de confirmation
+            $alert = 'Confirmation';
+            $message = 'Inscription réussie.';
         }
         // on assume une demande d'ouverture de session (utile pour auto-login après inscription)
         $logged = $customer->login($email, $password);
         if (!$logged){ throw new Exception('La connexion a échouée.'); }
+        if (!$alert){
+            $alert = 'Confirmation';
+            $message = 'Connexion réussie.';
+        }
             
     } catch (Exception $e){
-        // TODO afficher un message d'erreur
+        // prepare le message d'erreur
+        $alert = 'Erreur';
+        $message = $e->getMessage();
     }
 
 }
@@ -91,6 +104,12 @@ else {
         $customer = new Customer();
         // utilise la méthode logout pour clore la session
         $customer->logout();
+        // prépare le message de confirmation
+        $alert = 'Confirmation';
+        $message = 'Vous êtes déconnecté.';
+    }
+    elseif ($action !== 'page'){
+        httpForbidden();
     }
 }
 ?>
@@ -107,7 +126,8 @@ else {
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -245,76 +265,56 @@ if (isset($_SESSION['logged'])){
       <!--/.Content-->
     </div>
 </div>
-<!--Modal: Login / Register Form-->
+<!--/Modal: Login / Register Form-->
+
+<!--Toast-->
+<?php if ($alert): ?>
+
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true"
+    data-delay="3000"
+    style="position: absolute; top: 4rem; right: 0.5rem;"
+>
+  <div class="toast-header">
+    <!-- <img src="..." class="rounded mr-2" alt="..."> -->
+    <strong class="mr-auto"><?= $alert ?></strong>
+    <!-- <small>11 mins ago</small> -->
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Fermer">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    <?= $message ?>
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.toast').toast('show');
+});
+</script>
+<?php endif; ?>
+<!--/Toast-->
+
 
 <!-- Container -->
 <div class="container my-4">
 
     <h2 class="my-5 h2">Jean-Michel Hinicker<br><small class="lead">A World of Faces</small></h2> 
 
-    <!-- Carousel Wrapper -->
-    <div id="carousel-example-2" class="carousel slide carousel-fade z-depth-1-half" data-ride="carousel">
+<?php
 
-        <!--Indicators-->
-        <ol class="carousel-indicators">
-            <li data-target="#carousel-example-2" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-example-2" data-slide-to="1"></li>
-            <li data-target="#carousel-example-2" data-slide-to="2"></li>
-        </ol>
-        <!--/Indicators-->
+switch ($page){
+    case 'order':
+        include('views/order.html');
+        break;
+    case 'aboutme':
+        include('views/aboutme.html');
+        break;
+    case 'home':
+        //include('views/home.html');
+        break;
+}
 
-        <!--Slides-->
-        <div class="carousel-inner" role="listbox">
-            <div class="carousel-item active">
-                <div class="view">
-                    <img class="d-block w-100" src="photos/public-maroc.jpg" alt="Visage d'une jeune fille originaire du Maroc">
-                    <div class="mask rgba-black-light"></div>
-                </div>
-                <div class="carousel-caption">
-                    <h3 class="h3-responsive">Maroc</h3>
-                    <p>First text</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <!--Mask color-->
-                <div class="view">
-                    <img class="d-block w-100" src="photos/public-germany.jpg" alt="Visage d'un vieil homme barbu originaire d'Allemagne">
-                    <div class="mask rgba-black-slight"></div>
-                </div>
-                <div class="carousel-caption">
-                    <h3 class="h3-responsive">Allemagne</h3>
-                    <p>Third text</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <!--Mask color-->
-                <div class="view">
-                    <img class="d-block w-100" src="photos/public-italy.jpg" alt="Visage d'une jeune fille sous la neige du Canada">
-                    <div class="mask rgba-black-strong"></div>
-                </div>
-                <div class="carousel-caption">
-                    <h3 class="h3-responsive">Italie</h3>
-                    <p>Secondary text</p>
-                </div>
-            </div>
-
-        </div>
-        <!--/Slides-->
-
-        <!--Controls-->
-        <a class="carousel-control-prev" href="#carousel-example-2" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carousel-example-2" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-
-        <!--/.Controls-->
-        </div>
-
-    <!-- /Carousel Wrapper -->
+?>
 
 </div>
 <!--/Container-->
