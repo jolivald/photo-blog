@@ -109,6 +109,7 @@ else {
         $message = 'Vous êtes déconnecté.';
     }
     elseif ($action !== 'page'){
+        echo 'ICI';
         httpForbidden();
     }
 }
@@ -134,22 +135,22 @@ else {
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="index.php">A World of Faces</a>
+    <a class="navbar-brand" href="?page=home">A World of Faces</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="index.php">Accueil <span class="sr-only">(actuel)</span></a>
+                <a class="nav-link" href="?page=home">Accueil <span class="sr-only">(actuel)</span></a>
             </li>
 <?php
 if (isset($_SESSION['logged'])){
-    echo '<li class="nav-item"><a class="nav-link" href="views/order.html">Commandes</a></li>';
+    echo '<li class="nav-item"><a class="nav-link" href="?page=order">Commandes</a></li>';
 }
 ?>
             <li class="nav-item">
-                <a class="nav-link" href="views/aboutme.html">A propos de moi</a>
+                <a class="nav-link" href="?page=aboutme">A propos de moi</a>
             </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">        
