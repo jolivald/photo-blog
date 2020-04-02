@@ -147,26 +147,48 @@ else {
     </button>
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="?page=home">Accueil <span class="sr-only">(actuel)</span></a>
-            </li>
-<?php
-if (isset($_SESSION['logged'])){
-    echo '<li class="nav-item"><a class="nav-link" href="?page=order">Commandes</a></li>';
-}
-?>
-            <li class="nav-item">
-                <a class="nav-link" href="?page=aboutme">A propos de moi</a>
-            </li>
+
+<?php if ($page === 'home'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=home">Accueil <span class="sr-only">(actuel)</span></a>
+    </li>
+<?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=home">Accueil</a>
+    </li>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['logged'])): ?>
+    <?php if ($page === 'order'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=order">Commandes <span class="sr-only">(actuel)</span></a>
+    </li>
+    <?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=order">Commandes</a>
+    </li>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php if ($page === 'aboutme'): ?>
+    <li class="nav-item active">
+        <a class="nav-link" href="?page=aboutme">A propos de moi <span class="sr-only">(actuel)</span></a>
+    </li>
+<?php else: ?>
+    <li class="nav-item">
+        <a class="nav-link" href="?page=aboutme">A propos de moi</a>
+    </li>
+<?php endif; ?>
+
             </ul>
-            <form class="form-inline my-2 my-lg-0">        
-<?php
-if (isset($_SESSION['logged'])){
-    echo '<a href="?action=logout&page='.$page.'" class="btn btn-primary btn-lg active">Déconnexion</a>';
-} else {
-    echo '<a href="#" class="btn btn-primary btn-lg active" data-toggle="modal" data-target="#modalLRForm">Connexion</a>';
-}
-?>
+            <form class="form-inline my-2 my-lg-0">   
+
+<?php if (isset($_SESSION['logged'])): ?>
+    <a href="?action=logout" class="btn btn-primary btn-lg active">Déconnexion</a>
+<?php else: ?>
+    <a href="#" class="btn btn-primary btn-lg active" data-toggle="modal" data-target="#modalLRForm">Connexion</a>
+<?php endif; ?>
+
             </form>
         </div>
 </nav>
