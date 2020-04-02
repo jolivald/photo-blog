@@ -311,7 +311,7 @@ switch ($page){
         include('views/aboutme.html');
         break;
     case 'home':
-        //include('views/home.html');
+        include('views/home.html');
         break;
 }
 
